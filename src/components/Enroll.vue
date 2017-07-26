@@ -1,35 +1,35 @@
 <template>
     <div>
         <div class="enroll_desc">
-            <img src="http://pic31.photophoto.cn/20140403/0020032841623151_b.jpg" alt="">
+            <img :src="details.images[0].url" alt="">
             <p class="enroll_desc_name">
-                收到回复可见的还是客户反馈说的疯狂大家数据库分类和卡号发的苦和客服会卡死
+                {{details.title}}
             </p>
             <div class="enroll_desc_price clearfix">
                 <span>已报名
-                    <i>0</i>/150</span>
+                    <i>{{details.users_count}}</i>/{{details.capacity_max}}</span>
                 <span class="number">￥
-                    <label>2356.99</label>
+                    <label>{{details.price*0.01}}</label>
                 </span>
             </div>
         </div>
-        <div style="background-color:#fff;">
+        <div class="join">
             <group>
-                <x-input title="姓名" placeholder="请填写" :min="1" :show-clear="true" text-align="right" placeholder-align="right"></x-input>
-                <x-input title="手机" placeholder="请填写" name="mobile" keyboard="number" is-type="china-mobile" :show-clear="true" text-align="right" placeholder-align="right"></x-input>
-                <selector direction="rtl" value="男" title="性别" :options="['男','女']"></selector>
-                <x-input title="年龄" placeholder="请填写" name="age" type="number" text-align="right" placeholder-align="right"></x-input>
-                <x-input title="备注" placeholder="请填写" :show-clear="true" text-align="right" placeholder-align="right"></x-input>
+                <x-input title="姓名" v-model="order.name" placeholder="请填写" :min="1" :show-clear="true" text-align="right" placeholder-align="right" required></x-input>
+                <x-input title="手机" v-model="order.mobile" placeholder="请填写" name="mobile" keyboard="number" is-type="china-mobile" :show-clear="true" text-align="right" placeholder-align="right"></x-input>
+                <selector direction="rtl" v-model="order.gender" value="男" title="性别" :options="['男','女']"></selector>
+                <x-input title="年龄" v-model="order.age" placeholder="请填写" :min="1" name="age" type="text" text-align="right" placeholder-align="right" required></x-input>
+                <x-input class="unmust" title="备注" v-model="order.remark" placeholder="请填写" :min="1" :show-clear="true" text-align="right" placeholder-align="right" required></x-input>
     
             </group>
         </div>
     
-        <group>
+        <group style="background-color:transparent">
             <group-title slot="title">
                 <i style="color:#FEC958;font-style:normal;">*</i>为必填项目
             </group-title>
             <div class="submit_btn">
-                <x-button>提交</x-button>
+                <x-button type="default" @click.native="submit">提交</x-button>
             </div>
         </group>
     </div>
@@ -40,7 +40,8 @@ import {
     Group,
     XButton,
     Selector,
-    GroupTitle,
+    GroupTitle, Toast,
+
     Cell
 } from 'vux'
 export default {
@@ -48,8 +49,61 @@ export default {
         XInput,
         XButton,
         Group, GroupTitle,
-        Selector,
+        Selector, Toast,
+
         Cell
+    },
+    data() {
+        return {
+            order: {
+                name: '',
+                mobile: '',
+                age: '20',
+                gender: '男',
+                remark: ''
+            },
+            details: {
+                price: 0,
+                images: [
+                    {
+                        id: '',
+                        url: '',
+                    }
+                ]
+            }
+        }
+
+    },
+    mounted() {
+        this.getDetails();
+    },
+    methods: {
+        getDetails() {
+            var self = this;
+            axios.get('/api/trains/' + this.$route.params.id + '/detail').then(function (response) {
+                self.details = response.data;
+            }).catch(function (err) {
+                self.$vux.toast.text('网络错误', 'top')
+            });
+
+        },
+        submit() {
+            var self = this;
+            axios.post('/api/trains/' + this.$route.params.id + '/join', {
+                token: localStorage.getItem('token'),
+                name: this.order.name,
+                age: this.order.age,
+                mobile: this.order.mobile,
+                gender: this.order.gender,
+                remark: this.order.remark
+            }).then(function (response) {
+                self.$router.push({
+                    path: '/orders/pay/' + response.data.id
+                })
+            }).catch(function (error) {
+                self.$vux.toast.text(error.response.data.message, 'middle')
+            });
+        }
     }
 }
 </script>
@@ -97,7 +151,6 @@ export default {
 }
 
 .weui-label {
-    padding-left: 10px;
     font-size: 14px;
 }
 
@@ -107,7 +160,11 @@ export default {
     margin-right: 5px;
     position: absolute;
     top: 14px;
-    left: 10px;
+    left: 0px;
+}
+
+.unmust .weui-label::before {
+    content: '' !important;
 }
 
 .submit_btn {
@@ -127,7 +184,22 @@ export default {
     border: none;
 }
 
-.weui-cells {
+
+.join {
+    background-color: #fff;
+    margin-top: 10px;
+    padding: 0 10px;
+}
+
+.join .weui-cells {
     background-color: transparent !important;
+}
+
+.join .weui-cell {
+    padding: 10px 8px;
+}
+
+.join .vux-selector.weui-cell_select-after {
+    padding-left: 8px;
 }
 </style>

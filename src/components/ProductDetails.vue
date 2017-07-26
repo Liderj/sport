@@ -1,6 +1,11 @@
 <template>
-    <div style="margin-bottom:2.44rem">
-        <swiper :list="training_imglist" :interval='4000' :duration='1000' dots-class='training_tips_btn' loop auto></swiper>
+    <div style=" padding-bottom:2.44rem">
+        <swiper :interval='4000' :duration='1000' dots-class='training_tips_btn' loop auto>
+            <swiper-item v-for="item in details.images">
+                <img style="width:100%;height: auto;" :src="item.url">
+            </swiper-item>
+    
+        </swiper>
         <div class="training_tips">
             <img slot="icon" src="../assets/gou.png">
             <span slot="title" style="color:#EDA031;font-size:12px">课程开始前24小时可退</span>
@@ -9,19 +14,19 @@
             <flexbox :gutter='10'>
                 <flexbox-item :span="1/3">
                     <div class="address_img">
-                        <img class="address_img" src="http://pic31.photophoto.cn/20140403/0020032841623151_b.jpg" alt="">
-                        <i class="img_len">2</i>
+                        <img class="address_img" :src="details.venue.images[0].url" alt="">
+                        <i class="img_len">{{details.venue.images.length}}</i>
                     </div>
                 </flexbox-item>
                 <flexbox-item :span="2/3">
                     <div class="address_info">
-                        <p>成成都省体育馆成都省体育馆成都省体育馆都省体育馆成都省体育馆成都省体育馆成都省体育馆成都省体育馆成都省体育馆成成都省体育馆成都省体育馆成都省体育馆都省体育馆成都省体育馆成都省体育馆成都省体育馆成都省体育馆成都省体育馆</p>
-                        <a href="tel:13551031357">
+                        <p>{{details.venue.name}}</p>
+                        <a :href="'tel:'+details.venue.phone">
                             <img src="../assets/dianhua.png" alt="">
                         </a>
                         <div class="rater">
                             <span v-for="index in 5">
-                                <i :class='{ y : index<=score }'></i>
+                                <i :class='{ y : index<=Math.round(details.venue.score) }'></i>
                             </span>
                         </div>
                     </div>
@@ -31,7 +36,7 @@
         <div class="address">
             <img slot="icon" src="../assets/dizhi.png">
             <span slot="title" style="color:#7D7D7D;">
-                <span style="vertical-align:middle;">地址地址地址地址地址</span>
+                <span style="vertical-align:middle;">{{ details.venue.address}}</span>
             </span>
         </div>
         <div class="training_direction">
@@ -39,48 +44,47 @@
             <div class="training_direction_item">
                 课程安排
                 <p>
-                    2016-07-05至2017-07-28
+                    {{details.start_date }}至 {{details.end_date }}
                 </p>
             </div>
             <div class="training_direction_item">
                 上课周期
                 <p>
-                    每周一至周五
+                    <span style="margin-right:5px" v-for="index in details.cycles">星期{{index.day_of_week}}</span>
                 </p>
                 <p>
-                    20:00- 22:00
+                    {{details.start_time }}-{{details.end_time }}
                 </p>
             </div>
             <div class="training_direction_item">
-                报名人数（已报名00人）
+                报名人数（已报名{{details.users_count}}人）
                 <p>
-                    25人
+                    {{details.capacity_max}}人
                 </p>
             </div>
             <div class="training_direction_item">
                 适用年龄
                 <p>
-                    16 - 22岁
+                    {{details.age}} - {{details.age_max}}岁
                 </p>
             </div>
         </div>
         <div class="training_direction">
             <div class="training_direction_title">课程详情</div>
-            <div class="training_direction_desc" v-bind:class="{  showmore: showMore,  'unshow': !showMore}">
-                课程详情课程详情课程详情课程详情课程详情课程详情
-                <img src="../../static/img/ke.png" alt="">
+            <div v-html="details.description" class="training_direction_desc" v-bind:class="{  showmore: showMore,  'unshow': !showMore}">
+    
             </div>
             <div v-if='!showMore' class="more_desc" @click="showMore = !showMore">
                 展开更多详情
             </div>
         </div>
         <div class="user_list">
-            <span class="user_list_title">已报名50人</span>
+            <span class="user_list_title">已报名{{details.users_count}}人</span>
             <flexbox :gutter="0">
-                <flexbox-item v-for="i in 7">
+                <flexbox-item :span="1/7" v-for="item in details.users">
                     <div class="user_list_item">
-                        <img slot="icon" src="../assets/vux_logo.png">
-                        <span>水水水</span>
+                        <img slot="icon" :src="item.avatar?item.avatar:'../../static/img/icon/weidenglu@2x.png'">
+                        <span v-text="item.nickname? item.nickname :'匿名'"></span>
                     </div>
                 </flexbox-item>
             </flexbox>
@@ -88,20 +92,18 @@
         <div class="recommend">
             <divider>为你推荐</divider>
             <div class="recommend_list">
-                <div class="recommend_item" v-for="i in 5">
-                    <a href="">
-                        <img src="../assets/logo.png" alt="">
-                        <div class="recommend_item_desc">
-                            <h4>小太阳舞dasfafasfsfsaf蹈培训</h4>
-                            <span>下周三 8:30 开始</span>
-                            <div class="recommend_item_price clearfix">
-                                <span class="recommend_item_address">高新fasfsfsafsafasfasfsafsa区</span>
-                                <span class="recommend_item_number">
-                                    <i>￥</i>20
-                                    <i>起</i> </span>
-                            </div>
+                <div class="recommend_item" v-for="item in details.recommend">
+                    <img :src="item.images[0].url" @click="go(item.id)" alt="">
+                    <div class="recommend_item_desc">
+                        <h4>{{item.title}}</h4>
+                        <span> {{details.start_date.substr(-5)}} {{details.start_time.substr(-3)}} 开始</span>
+                        <div class="recommend_item_price clearfix">
+                            <span class="recommend_item_address">{{item.area}}</span>
+                            <span class="recommend_item_number">
+                                <i>￥</i>{{item.price*0.01}}
+                                <i>起</i> </span>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -109,15 +111,15 @@
             <divider>荷尔蒙服务保障</divider>
             <flexbox :gutter="0">
                 <flexbox-item :span='1/3'>
-                    <img src="../assets/vux_logo.png" alt="">
+                    <img src="../../static/img/icon/pinzhi@2x.png" alt="">
                     <p>品质保障</p>
                 </flexbox-item>
                 <flexbox-item :span='1/3'>
-                    <img src="../assets/vux_logo.png" alt="">
+                    <img src="../../static/img/icon/jiage@2x.png" alt="">
                     <p>更低价格</p>
                 </flexbox-item>
                 <flexbox-item :span='1/3'>
-                    <img src="../assets/vux_logo.png" alt="">
+                    <img src="../../static/img/icon/gaitui@2x.png" alt="">
                     <p>支持退改</p>
                 </flexbox-item>
             </flexbox>
@@ -125,53 +127,100 @@
     
         <div class="apply clearfix">
             <span class="apply_price">
-                ￥
-                <i>220.00</i>元
+                <i>￥{{details.price*0.01}}</i>元
             </span>
-            <router-link :to="{ name: 'Enroll', params: { userId: 123 }}">立即报名</router-link>
+            <a @click="enroll">立即报名</a>
         </div>
-    
     </div>
 </template>
 
 <script>
+
 import {
     Swiper,
+    SwiperItem,
     Cell,
     Flexbox,
-    FlexboxItem,
+    Toast,
+    FlexboxItem, Tabbar, TabbarItem,
     Grid,
     Divider,
-    GridItem,
+    GridItem, Loading,
     Group
 } from 'vux'
-const baseList = [{
-    img: 'https://static.vux.li/demo/1.jpg',
-    title: '送你一朵fua'
-}, {
-    img: 'https://static.vux.li/demo/2.jpg',
-    title: '送你一辆车'
-}, {
-    img: 'https://static.vux.li/demo/3.jpg',
-    title: '送你一次旅行'
-}]
+
 export default {
     components: {
         Swiper,
+        SwiperItem, Tabbar, TabbarItem,
+        Toast,
         Cell,
         Flexbox,
         FlexboxItem,
         Grid,
         Divider,
-        GridItem,
+        GridItem, Loading,
         Group
     },
     data() {
         return {
-            training_imglist: baseList,
-            score: 3,
-            showMore: false
+            score: '',
+            showMore: false,
+            details: {
+                start_date: 0,
+                end_date: 0,
+                start_time: 0,
+                end_time: 0,
+                price: 0,
+                images: [
+                    {
+                        id: '',
+                        url: '',
+                    }
+                ],
+                venue: {
+                    images: [{
+                        url: ''
+                    }],
+                },
+                cycles: [
+                    { id: '', day_of_week: '' }
+                ],
+                users: {
+                    nickname: '',
+                    avatar: ''
+                }
+            }
         }
+    },
+    mounted() {
+        this.getDetails();
+    },
+    methods: {
+        go(id) {
+            this.$router.push({ name: 'ProductDetails', params: { id: id } })
+            window.location.reload();
+        },
+        getDetails() {
+            var self = this
+            self.$vux.loading.show()
+            axios.get('/api/trains/' + this.$route.params.id + '/detail')
+                .then(function (response) {
+                    self.details = response.data;
+                    self.users = response.data.users.slice(-1, -7);
+                    self.details.start_date = dateFormat.datef('YYYY-MM-dd', response.data.start_date)
+                    self.details.end_date = dateFormat.datef('YYYY-MM-dd', response.data.end_date)
+                    self.$vux.loading.hide()
+                }).catch(function (err) {
+                    self.$vux.toast.text('网络错误', 'top')
+                });
+        },
+        enroll() {
+            this.$router.push({ name: 'Enroll', params: { id: this.details.id } })
+        }
+    },
+    watch: {
+        '$route': 'getDetails'
     }
 }
 </script>
@@ -364,6 +413,7 @@ export default {
 .user_list_item img {
     border-radius: 50%;
     width: 85%;
+    height: 12.14vw;
 }
 
 .user_list_item span {
@@ -466,14 +516,15 @@ export default {
     position: fixed;
     width: 100%;
     padding: .333rem 0;
-    left: 0;
-    bottom: 0;
+    bottom: 0px;
     background-color: #fff;
-    z-index: 999;
+    z-index: 1102;
     transform: translate3d(0, 0, 0);
     -webkit-transform: translate3d(0, 0, 0);
     -webkit-transform: translateZ(0);
 }
+
+
 
 .apply span {
     line-height: 1.013rem;
