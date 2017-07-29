@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import ProductDetails from '@/components/ProductDetails'
+// import Address from '@/components/Address'
+const Address = resolve => require(['@/components/Address'], resolve)
 import Enroll from '@/components/Enroll'
 import Login from '@/components/login/Login'
 import LoginIndex from '@/components/login/Loginindex'
@@ -26,6 +28,11 @@ export default new Router({
             path: '/details/:id',
             name: 'ProductDetails',
             component: ProductDetails
+        },
+        {
+            path: '/details/address/:id',
+            name: 'Address',
+            component: Address
         },
         {
             path: '/enroll/:id',

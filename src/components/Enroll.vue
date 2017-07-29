@@ -19,8 +19,7 @@
                 <x-input title="手机" v-model="order.mobile" placeholder="请填写" name="mobile" keyboard="number" is-type="china-mobile" :show-clear="true" text-align="right" placeholder-align="right"></x-input>
                 <selector direction="rtl" v-model="order.gender" value="男" title="性别" :options="['男','女']"></selector>
                 <x-input title="年龄" v-model="order.age" placeholder="请填写" :min="1" name="age" type="text" text-align="right" placeholder-align="right" required></x-input>
-                <x-input class="unmust" title="备注" v-model="order.remark" placeholder="请填写" :min="1" :show-clear="true" text-align="right" placeholder-align="right" required></x-input>
-    
+                <x-input class="unmust" :required="false" title="备注" v-model="order.remark" placeholder="请填写" :min="1" :show-clear="true" text-align="right" placeholder-align="right"></x-input>
             </group>
         </div>
     
@@ -50,7 +49,6 @@ export default {
         XButton,
         Group, GroupTitle,
         Selector, Toast,
-
         Cell
     },
     data() {

@@ -14,7 +14,10 @@
             <flexbox :gutter='10'>
                 <flexbox-item :span="1/3">
                     <div class="address_img">
-                        <img class="address_img" :src="details.venue.images[0].url" alt="">
+                        <img class="address_img" @click="showImg" :src="details.venue.images[0].url" alt="">
+                        <div v-transfer-dom>
+                            <previewer ref="previewer" :options="options" :list="list"></previewer>
+                        </div>
                         <i class="img_len">{{details.venue.images.length}}</i>
                     </div>
                 </flexbox-item>
@@ -36,7 +39,9 @@
         <div class="address">
             <img slot="icon" src="../assets/dizhi.png">
             <span slot="title" style="color:#7D7D7D;">
-                <span style="vertical-align:middle;">{{ details.venue.address}}</span>
+                <span style="vertical-align:middle;">
+                    <router-link :to="{path:'/details/address/'+details.id}" style="color:#7D7D7D"> {{ details.venue.address}}</router-link>
+                </span>
             </span>
         </div>
         <div class="training_direction">
@@ -145,14 +150,17 @@ import {
     FlexboxItem, Tabbar, TabbarItem,
     Grid,
     Divider,
-    GridItem, Loading,
+    GridItem, Loading, Previewer, TransferDom,
     Group
 } from 'vux'
 
 export default {
+    directives: {
+        TransferDom
+    },
     components: {
         Swiper,
-        SwiperItem, Tabbar, TabbarItem,
+        SwiperItem, Tabbar, TabbarItem, Previewer,
         Toast,
         Cell,
         Flexbox,
@@ -164,6 +172,18 @@ export default {
     },
     data() {
         return {
+            list: [{
+                src: ''
+            }],
+            options: {
+                getThumbBoundsFn(index) {
+                    let thumbnail = document.querySelectorAll('.address_img')[0]
+                    let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
+                    let rect = thumbnail.getBoundingClientRect()
+                    return { x: rect.left, y: rect.top + pageYScroll, w: rect.width }
+
+                }
+            },
             score: '',
             showMore: false,
             details: {
@@ -210,13 +230,25 @@ export default {
                     self.users = response.data.users.slice(-1, -7);
                     self.details.start_date = dateFormat.datef('YYYY-MM-dd', response.data.start_date)
                     self.details.end_date = dateFormat.datef('YYYY-MM-dd', response.data.end_date)
+
+                    // for (var i = 0; i < response.data.venue.images.length; i++) {
+                    //     for (var img = 0; i < response.data.venue.images.length - 1; img++) {
+                    //         var item =
+                    //             self.list.push()
+                    //     }
+                    // }
                     self.$vux.loading.hide()
                 }).catch(function (err) {
+                    console.log(err)
                     self.$vux.toast.text('网络错误', 'top')
+                    self.$vux.loading.hide()
                 });
         },
         enroll() {
             this.$router.push({ name: 'Enroll', params: { id: this.details.id } })
+        },
+        showImg() {
+            this.$refs.previewer.show(0)
         }
     },
     watch: {

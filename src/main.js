@@ -19,7 +19,6 @@ FastClick.attach(document.body)
 Vue.config.productionTip = false
 
 
-
 window.dateFormat = require('./assets/js/datef');
 window.axios = require('../node_modules/axios');
 window.pingpp = require('pingpp-js');
@@ -72,6 +71,9 @@ axios.interceptors.response.use(
         return Promise.reject(error) // 返回接口返回的错误信息
     });
 /* eslint-disable no-new */
+
+
+
 new Vue({
     router,
     render: h => h(App)
