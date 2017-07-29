@@ -40,7 +40,7 @@
             <img slot="icon" src="../assets/dizhi.png">
             <span slot="title" style="color:#7D7D7D;">
                 <span style="vertical-align:middle;">
-                    <router-link :to="{path:'/details/address/'+details.id}" style="color:#7D7D7D"> {{ details.venue.address}}</router-link>
+                    <router-link :to="{path:'/details/address/'+details.id,query: { longitude: details.longitude,latitude:details.latitude }}" style="color:#7D7D7D"> {{ details.venue.address}}</router-link>
                 </span>
             </span>
         </div>
@@ -172,9 +172,8 @@ export default {
     },
     data() {
         return {
-            list: [{
-                src: ''
-            }],
+            list: [
+            ],
             options: {
                 getThumbBoundsFn(index) {
                     let thumbnail = document.querySelectorAll('.address_img')[0]
@@ -228,18 +227,13 @@ export default {
                 .then(function (response) {
                     self.details = response.data;
                     self.users = response.data.users.slice(-1, -7);
-                    self.details.start_date = dateFormat.datef('YYYY-MM-dd', response.data.start_date)
-                    self.details.end_date = dateFormat.datef('YYYY-MM-dd', response.data.end_date)
-
-                    // for (var i = 0; i < response.data.venue.images.length; i++) {
-                    //     for (var img = 0; i < response.data.venue.images.length - 1; img++) {
-                    //         var item =
-                    //             self.list.push()
-                    //     }
-                    // }
+                    self.details.start_date = dateFormat.datef('YYYY-MM-dd', response.data.start_date * 1000)
+                    self.details.end_date = dateFormat.datef('YYYY-MM-dd', response.data.end_date * 1000)
+                    for (var i = 0; i < response.data.venue.images.length; i++) {
+                        self.list.push({ src: response.data.venue.images[i].url })
+                    }
                     self.$vux.loading.hide()
                 }).catch(function (err) {
-                    console.log(err)
                     self.$vux.toast.text('网络错误', 'top')
                     self.$vux.loading.hide()
                 });
