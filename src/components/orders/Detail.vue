@@ -199,7 +199,6 @@ export default {
                         self.timer()
                 }
             ).catch(function (error) {
-                console.log(error)
                 self.$vux.loading.hide()
                 self.$vux.toast.text(error.response.data.message, 'middle')
             });
@@ -217,7 +216,7 @@ export default {
                         .then(function (response) {
                             self.$vux.toast.text('取消成功', 'middle')
                             setTimeout(function () {
-                                self.getOrderList(name)
+                                self.$router.go(0)
                             }, 2000);
                         }).catch(function (error) {
                             self.$vux.toast.text(error.response.data.message, 'middle')

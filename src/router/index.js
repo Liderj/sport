@@ -9,12 +9,17 @@ import LoginIndex from '@/components/login/Loginindex'
 import Register from '@/components/login/Register'
 import Mobile from '@/components/login/Mobile'
 import Forget from '@/components/login/Forget'
+import Bind from '@/components/login/Bind'
+
 
 import Orders from '@/components/orders/Index'
 import Pay from '@/components/orders/Pay'
 import Comment from '@/components/orders/Comment'
 import Detail from '@/components/orders/Detail'
 import Userinfo from '@/components/orders/Userinfo'
+import Success from '@/components/orders/Paycallback'
+
+
 
 
 
@@ -24,6 +29,7 @@ import Userinfo from '@/components/orders/Userinfo'
 Vue.use(Router)
 
 export default new Router({
+    mode: 'history',
     routes: [{
             path: '/details/:id',
             name: 'ProductDetails',
@@ -61,6 +67,14 @@ export default new Router({
             }]
         },
         {
+            path: '/bind',
+            name: 'Bind',
+            component: Bind,
+            meta: {
+                requireAuth: true,
+            },
+        },
+        {
             path: '/orders',
             component: Orders,
             meta: {
@@ -70,6 +84,13 @@ export default new Router({
         {
             path: '/orders/pay/:id',
             component: Pay,
+            meta: {
+                requireAuth: true,
+            },
+        },
+        {
+            path: '/orders/success/:id',
+            component: Success,
             meta: {
                 requireAuth: true,
             },

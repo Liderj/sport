@@ -108,7 +108,7 @@ export default {
                 {
                     paymentable_id: self.details.id,
                     channel: self.channel,
-                    success_url: 'http://www.heermengsport.com/page/#/orders'
+                    success_url: 'http://www.heermengsport.com/page/#/orders/success/' + self.details.id
                 }
             ).then(function (response) {
                 pingpp.createPayment(response.data.charge, function (result, err) {

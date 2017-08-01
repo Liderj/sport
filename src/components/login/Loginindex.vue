@@ -8,7 +8,7 @@
             <divider>其他快捷登录方式</divider>
             <div class="other_row">
                 <div class="other_btn">
-                    <img src="../../../static/img/icon/qq@2x.png" alt="">
+                    <img src="../../../static/img/icon/qq@2x.png" @click="qqlogin" alt="">
                     <img src="../../../static/img/icon/weibo@2x.png" alt="">
                     <img src="../../../static/img/icon/weixin@2x.png" alt="">
                 </div>
@@ -27,21 +27,62 @@ export default {
         Divider
 
     },
+    data() {
+        return {
+            openid: '',
+            redirect: ''
+        }
+    },
     mounted() {
-        // this.getacsstoken()
+        this.$nextTick(function () {
+            var self = this
+            self.redirect = localStorage.getItem('redirect')
+            if (QC.Login.check()) {
+                QC.Login.getMe(function (openId, accessToken) {
+                    self.openid = openId
+                    self.loginOk(self.openid, 'qq')
+
+                })
+            }
+
+        })
+
     },
     methods: {
-        getacsstoken() {
-            var location = 'https://graph.qq.com/oauth2.0/authorize?response_type=token&client_id=1106258194&redirect_uri=120.77.43.178:8088/api/oauth'
-            window.location.href = location;
-            // axios.get('https://graph.qq.com/oauth2.0/authorize?response_type=token&client_id=1106258194&redirect_uri=www.baidu.com').then((res) => {
-            //     if (res.data.code == 0) { //微信登录成功跳转个人中心
-            //         console.log('ok')
-            //     } else { //微信登录失败，使用填写信息登录
-            //         console.log('o')
+        qqlogin() {
+            var self = this
 
-            //     }
-            // })
+            var oOpts = {
+                appId: "1106301038",
+                redirectURI: "http://192.168.1.10:8080/login"
+            }
+            QC.Login.showPopup(oOpts)
+
+        },
+        loginOk(openid, type) {
+            var self = this
+            axios.post('/api/oauth', { type: type, openid: openid }).then(function (res) {
+                localStorage.setItem('token', res.data.token)
+                if (res.data.mobile) {
+                    self.$router.push({
+                        path: self.redirect
+                    })
+                } else {
+                    self.$vux.confirm.show({
+                        title: '提示',
+                        content: '是否绑定手机号码？',
+                        onCancel() {
+                            self.$router.push({
+                                path: self.redirect
+                            })
+                        },
+                        onConfirm() {
+                            self.$router.push({ path: '/bind' })
+                        }
+                    })
+                }
+
+            })
         }
     }
 }
