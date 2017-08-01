@@ -54,7 +54,7 @@ export default {
 
             var oOpts = {
                 appId: "1106301038",
-                redirectURI: "http://192.168.1.10:8080/login"
+                redirectURI: "http://www.heermengsport/page/login"
             }
             QC.Login.showPopup(oOpts)
 
