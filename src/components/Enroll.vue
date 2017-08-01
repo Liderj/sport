@@ -190,6 +190,7 @@ export default {
 }
 
 .join .weui-cells {
+    width: 100%;
     background-color: transparent !important;
 }
 

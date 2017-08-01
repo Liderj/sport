@@ -31,17 +31,17 @@ Vue.use(Router)
 export default new Router({
     mode: 'history',
     routes: [{
-            path: '/details/:id',
+            path: '/page/details/:id',
             name: 'ProductDetails',
             component: ProductDetails
         },
         {
-            path: '/details/address/:id',
+            path: '/page/details/address/:id',
             name: 'Address',
             component: Address
         },
         {
-            path: '/enroll/:id',
+            path: '/page/enroll/:id',
             name: 'Enroll',
             component: Enroll,
             meta: {
@@ -49,11 +49,11 @@ export default new Router({
             },
         },
         {
-            path: '/login',
+            path: '/page/login',
             name: 'Login',
             component: Login,
             children: [{
-                path: '/login',
+                path: '/page/login',
                 component: LoginIndex
             }, {
                 path: '/register',
@@ -67,7 +67,7 @@ export default new Router({
             }]
         },
         {
-            path: '/bind',
+            path: '/page/bind',
             name: 'Bind',
             component: Bind,
             meta: {
@@ -75,42 +75,42 @@ export default new Router({
             },
         },
         {
-            path: '/orders',
+            path: '/page/orders',
             component: Orders,
             meta: {
                 requireAuth: true,
             },
         },
         {
-            path: '/orders/pay/:id',
+            path: '/page/orders/pay/:id',
             component: Pay,
             meta: {
                 requireAuth: true,
             },
         },
         {
-            path: '/orders/success/:id',
+            path: '/page/orders/success/:id',
             component: Success,
             meta: {
                 requireAuth: true,
             },
         },
         {
-            path: '/orders/Detail/:id',
+            path: '/page/orders/Detail/:id',
             component: Detail,
             meta: {
                 requireAuth: true,
             },
         },
         {
-            path: '/orders/detail/user/:id',
+            path: '/page/orders/detail/user/:id',
             component: Userinfo,
             meta: {
                 requireAuth: true,
             },
         },
         {
-            path: '/orders/comment/:id',
+            path: '/page/orders/comment/:id',
             component: Comment,
             meta: {
                 requireAuth: true,

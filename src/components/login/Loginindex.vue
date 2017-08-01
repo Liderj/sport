@@ -10,7 +10,10 @@
                 <div class="other_btn">
                     <img src="../../../static/img/icon/qq@2x.png" @click="qqlogin" alt="">
                     <img src="../../../static/img/icon/weibo@2x.png" alt="">
-                    <img src="../../../static/img/icon/weixin@2x.png" alt="">
+                    <a href="http://120.77.43.178:8088/api/oauth/weixin/page?redirect_uri=http:// /page/login">
+                        <img src="../../../static/img/icon/weixin@2x.png" alt="">
+                    </a>
+    
                 </div>
             </div>
     
@@ -30,7 +33,8 @@ export default {
     data() {
         return {
             openid: '',
-            redirect: ''
+            redirect: '',
+            code: ''
         }
     },
     mounted() {
@@ -44,6 +48,11 @@ export default {
 
                 })
             }
+            if (self.$router.params.code) {
+                self.wechatlogin(self.$router.params.code)
+                self.loginOk(self.openid, 'wechat')
+
+            }
 
         })
 
@@ -54,10 +63,18 @@ export default {
 
             var oOpts = {
                 appId: "1106301038",
-                redirectURI: "http://www.heermengsport/page/login"
+                redirectURI: "http://www.heermengsport.com/page/login"
             }
             QC.Login.showPopup(oOpts)
+        },
+        wechatlogin(code) {
+            var self = this
 
+            axios.get('/api/oauth/weixin/info', {
+                code: code
+            }).then(function (res) {
+                self.openid = res.data.openid
+            })
         },
         loginOk(openid, type) {
             var self = this
