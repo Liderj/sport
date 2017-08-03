@@ -154,6 +154,10 @@ export default {
     height: 14px;
 }
 
+.weui-cells {
+    width: 100%;
+}
+
 .weui-cells_radio .weui-check:checked+.weui-icon-checked:before {
     content: "" !important;
     background: url('../../../static/img/icon/gouxuan@2x.png') no-repeat;
