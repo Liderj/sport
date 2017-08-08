@@ -182,10 +182,9 @@ export default {
 .tips {
     position: absolute;
     width: 100%;
-    top: -0.667rem;
-    padding: .1rem 0;
+    top: -35px;
+    padding: 5px 0;
     text-align: center;
-    line-height: 0.667rem;
     background-color: #FFF3DB;
 }
 

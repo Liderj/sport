@@ -341,7 +341,7 @@ export default {
     position: absolute;
     left: -5px;
     top: 0;
-    border-left: 14px dotted #fbf9fe;
+    border-left: 14px dotted #fff;
 }
 
 .order_status {

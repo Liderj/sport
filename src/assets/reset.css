@@ -9,7 +9,7 @@ body {
     margin: 0;
     color: #333333;
     position: absolute;
-    background-color: #f5f5f5;
+    background-color: #efeff4;
     min-height: 100%;
     width: 100%;
     overflow-x: hidden;
@@ -273,18 +273,6 @@ h2,
 h3 {
     line-height: 2;
     font-weight: normal;
-}
-
-h1 {
-    font-size: 1.8rem;
-}
-
-h2 {
-    font-size: 1.6rem;
-}
-
-h3 {
-    font-size: 1.4rem;
 }
 
 input::-moz-placeholder,

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="background-color: #efeff4;">
         <header style="position:fixed;width:100%;top:0;">
             <tab :line-width=2 active-color='#FEC957'>
                 <tab-item class="vux-center" :selected="selected === item.value" v-for="(item, index) in list" @on-item-click="getOrderList(item.id)" :key="index">{{item.value}}</tab-item>

@@ -1,11 +1,11 @@
 <template>
     <div>
         <div class="enroll_desc">
-            <img :src="details.images[0].url" alt="">
+            <img :src="details.cover" alt="">
             <p class="enroll_desc_name">
                 {{details.title}}
             </p>
-            <div class="enroll_desc_price clearfix">
+            <div class="enroll_desc_price">
                 <span>已报名
                     <i>{{details.users_count}}</i>/{{details.capacity_max}}</span>
                 <span class="number">￥
@@ -23,12 +23,12 @@
             </group>
         </div>
     
-        <group style="background-color:transparent">
+        <group class="s_b" style="background-color:transparent">
             <group-title slot="title">
-                <i style="color:#FEC958;font-style:normal;">*</i>为必填项目
+                <i style="color:#FEC958;font-style:normal; ">*</i>为必填项目
             </group-title>
-            <div class="submit_btn">
-                <x-button type="default" @click.native="submit">提交</x-button>
+            <div class="submit_btn ">
+                <x-button type="default " @click.native="submit ">提交</x-button>
             </div>
         </group>
     </div>
@@ -123,7 +123,9 @@ export default {
 
 .enroll_desc_price {
     color: #AEAEAE;
-    padding: 0 10px
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .enroll_desc_price span {
@@ -200,5 +202,9 @@ export default {
 
 .join .vux-selector.weui-cell_select-after {
     padding-left: 8px;
+}
+
+.s_b .weui-cells {
+    background-color: transparent;
 }
 </style>

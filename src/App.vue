@@ -11,10 +11,9 @@ export default {
 </script>
 
 <style lang="less">
-@import '~vux/src/styles/reset.less';
-
+// @import '~vux/src/styles/reset.less';
 body {
-  background-color: #fbf9fe;
+  background-color: #efeff4;
 }
 
 #app {
@@ -22,5 +21,6 @@ body {
   width: 100%;
   position: absolute;
   -webkit-overflow-scrolling: touch;
+  background-color: #efeff4;
 }
 </style>

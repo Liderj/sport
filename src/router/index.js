@@ -32,6 +32,9 @@ export default new Router({
     mode: 'history',
     base: 'page',
     routes: [{
+            path: '/',
+            redirect: '/details/1'
+        }, {
             path: '/details/:id',
             name: 'ProductDetails',
             component: ProductDetails
