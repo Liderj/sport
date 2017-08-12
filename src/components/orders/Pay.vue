@@ -20,7 +20,7 @@
         </div>
         <div class="agreement">
             <img src="../../../static/img/icon/tongyi@2x.png" width="12" height="12"> 我已同意
-            <a>荷尔蒙用户协议</a>
+            <a href="http://www.heermengsport.com/static/useragreement.html">荷尔蒙用户协议</a>
         </div>
         <div class="apply clearfix">
             <div class="tips">
