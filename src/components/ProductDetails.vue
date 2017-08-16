@@ -102,7 +102,7 @@
             <divider>为你推荐</divider>
             <div class="recommend_list">
                 <div class="recommend_item" v-for="item in details.recommend">
-                    <img :src="item.images[0].url" @click="go(item.id)" alt="">
+                    <img :src="item.cover" @click="go(item.id)" alt="">
                     <div class="recommend_item_desc">
                         <h4>{{item.title}}</h4>
                         <span> {{details.start_date.substr(-5)}} {{details.start_time.substr(-3)}} 开始</span>
