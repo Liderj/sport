@@ -13,10 +13,10 @@
                     <a href="http://120.77.43.178:8088/api/oauth/weixin/page?redirect_uri=http://www.heermengsport.com/page/login">
                         <img src="../../../static/img/icon/weixin@2x.png" alt="">
                     </a>
-    
+
                 </div>
             </div>
-    
+
         </div>
     </div>
 </template>
@@ -80,6 +80,15 @@ export default {
             var self = this
             axios.post('/api/oauth', { type: type, openid: openid }).then(function (res) {
                 localStorage.setItem('token', res.data.token)
+                if (ua.indexOf('heersport') != '-1') {
+                    if (/iphone|ipad|ipod/.test(ua)) {
+                        // ios下h5调用原生方法 并传入用户信息
+                        window.webkit.messageHandlers.getUserInfo.postMessage(response.data);
+
+                    } else if (/android/.test(ua)) {
+                        window.JsToNative.jsMethodReturn(response.data);
+                    }
+                }
                 if (res.data.mobile) {
                     self.$router.push({
                         path: self.redirect

@@ -4,7 +4,7 @@
             <x-input v-model="mobile" required keyboard="number" is-type="china-mobile" style="border-bottom:1px solid #D7D7D7 ;padding: 15px 0;" placeholder="手机号">
                 <img slot="label" style="padding-right:20px;display:block;" src="../../../static/img/icon/shouji@2x.png" width="14" height="18">
             </x-input>
-    
+
             <x-input ref="password" :required="false" :show-clear='false' type="password" v-model="password" style="border-bottom:1px solid #D7D7D7 ;padding: 15px 0;" placeholder="密码(最少6位)">
                 <img slot="label" style="padding-right:10px;display:block;" src="../../../static/img/icon/mima@2x.png" width="11" height="17">
                 <img slot="right" id="showpwd" @click="showpassword" style="padding-right:20px;display:block;" src="../../../static/img/icon/bukejian@2x.png" width="14" height="13">
@@ -55,11 +55,21 @@ export default {
             }).then(
                 function (response) {
                     localStorage.setItem('token', response.data.token)
+                    if (ua.indexOf('heersport') != '-1') {
+                        if (/iphone|ipad|ipod/.test(ua)) {
+                            // ios下h5调用原生方法 并传入用户信息
+                            window.webkit.messageHandlers.getUserInfo.postMessage(response.data);
+
+                        } else if (/android/.test(ua)) {
+                            window.JsToNative.jsMethodReturn(response.data);
+                        }
+                    }
                     var redirect = localStorage.getItem('redirect')
                     self.$vux.loading.hide()
                     self.$router.push({
                         path: redirect
                     })
+                    window.webkit.messageHandlers.getUserInfo.postMessage(JSON.stringify(response.data));
                 }).catch(function (error) {
                     self.$vux.loading.hide()
 

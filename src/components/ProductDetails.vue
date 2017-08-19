@@ -4,11 +4,11 @@
             <img src="../../static/img/icon/logo@2x.png" alt="">
             <a href="">下载app</a>
         </div>
-        <swiper :interval='4000' :duration='1000' dots-class='training_tips_btn' loop auto>
+        <swiper :interval='5000' :duration='1000' dots-class='training_tips_btn' loop auto>
             <swiper-item v-for="item in details.images">
                 <img style="width:100%;height: auto;" :src="item.url">
             </swiper-item>
-    
+
         </swiper>
         <div class="training_tips">
             <img slot="icon" src="../assets/gou.png">
@@ -81,7 +81,7 @@
         <div class="training_direction">
             <div class="training_direction_title">课程详情</div>
             <div v-html="details.description" class="training_direction_desc" v-bind:class="{  showmore: showMore,  'unshow': !showMore}">
-    
+
             </div>
             <div v-if='!showMore' class="more_desc" @click="showMore = !showMore">
                 展开更多详情
@@ -133,7 +133,7 @@
                 </flexbox-item>
             </flexbox>
         </div>
-    
+
         <div class="apply ">
             <span class="apply_price">
                 <i>￥{{details.price*0.01}}</i>元
@@ -235,7 +235,6 @@ export default {
         if (ua.indexOf('heersport') == '-1') {
             this.download = true
         }
-        console.log(this.download)
         this.getDetails();
     },
     methods: {
