@@ -22,16 +22,6 @@ Vue.config.productionTip = false
 window.dateFormat = require('./assets/js/datef');
 window.axios = require('../node_modules/axios');
 window.pingpp = require('pingpp-js');
-window.JSgetUserInfo = function(user) {
-    if (user) {
-        try {
-            user = JSON.parse(user)
-            localStorage.setItem('token', user.token)
-        } catch (error) {
-            // window.alert(error)
-        }
-    }
-}
 
 
 

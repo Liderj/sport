@@ -10,7 +10,14 @@
     <!-- <link rel="stylesheet" type="text/css" href="./src/assets/reset.css"> -->
 
     <script type="text/javascript" src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" charset="utf-8"></script>
-
+    <script>
+        window.JSgetUserInfo = function(user) {
+            if (user) {
+                user = JSON.parse(user)
+                localStorage.setItem('token', user.token)
+            }
+        }
+    </script>
 </head>
 
 <body>
