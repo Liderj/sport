@@ -232,7 +232,7 @@ export default {
     },
     mounted() {
         if (window.isApp()) {
-            this.download = true
+            this.download = false
         }
         this.getDetails();
         if (window.isApp()) {

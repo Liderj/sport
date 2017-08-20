@@ -39,6 +39,7 @@ export default {
     methods: {
         sendMsg() {
             this.waiting = !this.waiting
+            this.waiting_text = '(60s)后重试'
             var smsTime = 60, self = this;
             var timer = setInterval(function () {
                 self.waiting_text = '(' + smsTime + 's)后重试'
