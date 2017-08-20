@@ -1,11 +1,13 @@
 <template>
     <div class="pay_callback">
         <div class="pay_img">
-            <img src="../../../static/img/icon/gouxuan@2x.png" alt="">
+            <img src="../../../static/img/gou.png" alt="">
             <p>支付成功</p>
         </div>
         <div class="pay_info">
             <ul>
+                <Li>
+                    <label for="">订单号</label>{{details.order_no}}</Li>
                 <Li>
                     <label for="">场馆</label>{{details.train.venue.name}}</Li>
                 <Li>
@@ -16,7 +18,6 @@
                     <label for="">日期</label>{{details.train.start_date}}</Li>
             </ul>
             <div class="shaer_btn">
-                <a>分享培训</a>
                 <router-link :to="{path:'/orders/Detail/'+details.id}">查看订单详情</router-link>
             </div>
         </div>
@@ -29,7 +30,11 @@
 export default {
     data() {
         return {
-            details: {}
+            details: {
+                train: {
+                    venue: ""
+                }
+            }
         }
     },
     mounted() {
@@ -97,7 +102,7 @@ export default {
 
 .shaer_btn {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-top: 20px;
 }
 
@@ -110,10 +115,13 @@ export default {
     border-radius: 20px;
 }
 
-.shaer_btn a:first-child {
+
+
+
+/* .shaer_btn a:first-child {
     background-color: #FEC958;
     color: #fff;
-}
+} */
 
 .shaer_btn a:last-child {
     color: #FEC958;
