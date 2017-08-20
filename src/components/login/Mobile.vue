@@ -55,12 +55,15 @@ export default {
             }).then(
                 function (response) {
                     localStorage.setItem('token', response.data.token)
-                    if (ua.indexOf('heersport') != '-1') {
+                    let ua = window.navigator.userAgent.toLowerCase();
+                    if (window.isApp()) {
                         if (/iphone|ipad|ipod/.test(ua)) {
-                            // ios下h5调用原生方法 并传入用户信息
+                            alert('开始调用ios方法')
                             window.webkit.messageHandlers.getUserInfo.postMessage(response.data);
 
                         } else if (/android/.test(ua)) {
+                            alert('开始调用android方法')
+
                             window.JsToNative.jsMethodReturn(response.data);
                         }
                     }
@@ -69,10 +72,8 @@ export default {
                     self.$router.push({
                         path: redirect
                     })
-                    window.webkit.messageHandlers.getUserInfo.postMessage(JSON.stringify(response.data));
                 }).catch(function (error) {
                     self.$vux.loading.hide()
-
                     self.$vux.toast.text(error.response.data.message, 'middle')
                 })
         }

@@ -11,10 +11,12 @@
 
     <script type="text/javascript" src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" charset="utf-8"></script>
     <script>
-        window.JSgetUserInfo = function(user) {
-            if (user) {
-                user = JSON.parse(user)
-                localStorage.setItem('token', user.token)
+        window.isApp = function() {
+            var ua = window.navigator.userAgent.toLowerCase();
+            if (ua.indexOf('heersport') == '-1') {
+                return false
+            } else {
+                return true
             }
         }
     </script>

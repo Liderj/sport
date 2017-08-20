@@ -41,17 +41,15 @@ export default {
         this.$nextTick(function () {
             var self = this
             self.redirect = localStorage.getItem('redirect')
+            console.log(QC.Login.check())
             if (QC.Login.check()) {
                 QC.Login.getMe(function (openId, accessToken) {
                     self.openid = openId
                     self.loginOk(self.openid, 'qq')
-
                 })
             }
-            if (self.$router.params.code) {
-                self.wechatlogin(self.$router.params.code)
-                self.loginOk(self.openid, 'wechat')
-
+            if (self.$route.query.code) {
+                self.wechatlogin(self.$route.query.code)
             }
 
         })
@@ -69,23 +67,33 @@ export default {
         },
         wechatlogin(code) {
             var self = this
-
+            if (QC.Login.check()) {
+                QC.Login.signOut()
+            }
             axios.get('/api/oauth/weixin/info', {
-                code: code
+                params: {
+                    code: code
+                }
             }).then(function (res) {
-                self.openid = res.data.openid
+                self.openid = res.data.openId
+                self.loginOk(self.openid, 'wechat')
+            }).catch(err => {
+                self.$vux.toast.text(err.response.data.message, 'top')
             })
         },
         loginOk(openid, type) {
             var self = this
             axios.post('/api/oauth', { type: type, openid: openid }).then(function (res) {
                 localStorage.setItem('token', res.data.token)
-                if (ua.indexOf('heersport') != '-1') {
+                let ua = window.navigator.userAgent.toLowerCase();
+                if (window.isApp()) {
                     if (/iphone|ipad|ipod/.test(ua)) {
-                        // ios下h5调用原生方法 并传入用户信息
+                        alert('开始调用ios方法')
                         window.webkit.messageHandlers.getUserInfo.postMessage(response.data);
 
                     } else if (/android/.test(ua)) {
+                        alert('开始调用android方法')
+
                         window.JsToNative.jsMethodReturn(response.data);
                     }
                 }

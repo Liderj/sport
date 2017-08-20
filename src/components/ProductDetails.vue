@@ -231,11 +231,18 @@ export default {
         }
     },
     mounted() {
-        var ua = window.navigator.userAgent;
-        if (ua.indexOf('heersport') == '-1') {
+        if (window.isApp()) {
             this.download = true
         }
         this.getDetails();
+        if (window.isApp()) {
+            if (this.$route.query.token) {
+                localStorage.setItem('token', this.$route.query.token)
+            }
+            else {
+                localStorage.setItem('token', '')
+            }
+        }
     },
     methods: {
         gotoOrders() {
