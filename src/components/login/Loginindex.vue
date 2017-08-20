@@ -85,18 +85,15 @@ export default {
             var self = this
             axios.post('/api/oauth', { type: type, openid: openid }).then(function (res) {
                 localStorage.setItem('token', res.data.token)
-                let ua = window.navigator.userAgent.toLowerCase();
-                if (window.isApp()) {
-                    if (/iphone|ipad|ipod/.test(ua)) {
-                        alert('开始调用ios方法')
-                        window.webkit.messageHandlers.getUserInfo.postMessage(response.data);
+                // let ua = window.navigator.userAgent.toLowerCase();
+                // if (window.isApp()) {
+                //     if (/iphone|ipad|ipod/.test(ua)) {
+                //         window.webkit.messageHandlers.getUserInfo.postMessage(response.data);
 
-                    } else if (/android/.test(ua)) {
-                        alert('开始调用android方法')
-
-                        window.JsToNative.jsMethodReturn(response.data);
-                    }
-                }
+                //     } else if (/android/.test(ua)) {
+                //         window.JsToNative.jsMethodReturn(response.data);
+                //     }
+                // }
                 if (res.data.mobile) {
                     self.$router.push({
                         path: self.redirect

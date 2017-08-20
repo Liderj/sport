@@ -185,7 +185,7 @@ export default {
     },
     data() {
         return {
-            download: false,
+            download: true,
             list: [],
             options: {
                 getThumbBoundsFn(index) {
@@ -233,9 +233,6 @@ export default {
     mounted() {
         if (window.isApp()) {
             this.download = false
-        }
-        this.getDetails();
-        if (window.isApp()) {
             if (this.$route.query.token) {
                 localStorage.setItem('token', this.$route.query.token)
             }
@@ -243,6 +240,7 @@ export default {
                 localStorage.setItem('token', '')
             }
         }
+        this.getDetails();
     },
     methods: {
         gotoOrders() {

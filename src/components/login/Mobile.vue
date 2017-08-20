@@ -55,18 +55,18 @@ export default {
             }).then(
                 function (response) {
                     localStorage.setItem('token', response.data.token)
-                    let ua = window.navigator.userAgent.toLowerCase();
-                    if (window.isApp()) {
-                        if (/iphone|ipad|ipod/.test(ua)) {
-                            alert('开始调用ios方法')
-                            window.webkit.messageHandlers.getUserInfo.postMessage(response.data);
+                    // let ua = window.navigator.userAgent.toLowerCase();
+                    // if (window.isApp()) {
+                    //     if (/iphone|ipad|ipod/.test(ua)) {
+                    //         alert('开始调用ios方法传入用户')
+                    //         window.webkit.messageHandlers.getUserInfo.postMessage(response.data);
 
-                        } else if (/android/.test(ua)) {
-                            alert('开始调用android方法')
+                    //     } else if (/android/.test(ua)) {
+                    //         alert('开始调用android方法传入用户')
 
-                            window.JsToNative.jsMethodReturn(response.data);
-                        }
-                    }
+                    //         window.JsToNative.jsMethodReturn(response.data);
+                    //     }
+                    // }
                     var redirect = localStorage.getItem('redirect')
                     self.$vux.loading.hide()
                     self.$router.push({
@@ -74,7 +74,7 @@ export default {
                     })
                 }).catch(function (error) {
                     self.$vux.loading.hide()
-                    self.$vux.toast.text(error.response.data.message, 'middle')
+                    // self.$vux.toast.text(error.response.data.message, 'middle')
                 })
         }
     }
