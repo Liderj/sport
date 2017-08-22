@@ -14,7 +14,7 @@
                     <label for="">创建时间:</label>{{created_at}}</span>
             </li>
         </ul>
-    
+
         <div class="venue">
             <p class="venue_name">{{details.train.venue.name}}</p>
             <div class="venue_info">
@@ -32,7 +32,7 @@
                 <span style="color:#FF6868">
                     {{status [details.status]}}
                 </span>
-    
+
             </div>
             <p>
                 {{details.name}}({{details.mobile}}) </br>
@@ -42,7 +42,7 @@
             <div class="action">
                 <a style="border:1px solid #E9E9E9;background-color:#fff;color: #2E2C2F;" v-if="details.status<3 &&details.status>0" @click.stop="cancel(details.id)">申请退款</a>
                 <a style="border:1px solid #E9E9E9;background-color:#fff;color: #2E2C2F;" v-if="details.status == '0'" @click.stop="cancel(details.id)">撤销订单</a>
-    
+
                 <router-link :to="{path:'/orders/comment/'+details.id}" v-if="details.status == '3'">去评价</router-link>
             </div>
         </div>
@@ -69,7 +69,7 @@
                 </div>
             </cell>
         </group>
-        <a v-if="details.status!=0" class="tel" :href="'tel:'+details.train.venue.phone">
+        <a v-if="details.status!=0" class="tel" @click="call(details.train.venue.phone)">
             <img src="../../assets/dianhua.png" width="21" height="21" alt=""> 联系主办方</a>
         <template v-if="details.status==0">
             <div class="pay_type">
@@ -79,7 +79,7 @@
             </div>
             <div class="agreement" style="padding-bottom:120px">
                 <img src="../../../static/img/icon/tongyi@2x.png" width="12" height="12"> 我已同意
-                <a>荷尔蒙用户协议</a>
+                <a href="http://www.heermengsport.com/page/static/useragreement.html">荷尔蒙用户协议</a>
             </div>
             <div class="apply clearfix">
                 <div class="tips">
@@ -92,7 +92,7 @@
                 <a @click="pay">确认支付</a>
             </div>
         </template>
-    
+
     </div>
 </template>
 <script>
@@ -146,6 +146,9 @@ export default {
         }
     },
     methods: {
+        call(tel) {
+            window.location.href = 'tel:' + tel
+        },
         pay() {
             var self = this
             axios.post('/api/charge/trains',

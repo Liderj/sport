@@ -28,7 +28,7 @@
                 <flexbox-item :span="2/3">
                     <div class="address_info">
                         <p>{{details.venue.name}}</p>
-                        <a :href="'tel:'+details.venue.phone">
+                        <a @click="call(details.venue.phone)">
                             <img src="../assets/dianhua.png" alt="">
                         </a>
                         <div class="rater">
@@ -243,6 +243,9 @@ export default {
         this.getDetails();
     },
     methods: {
+        call(tel) {
+            window.location.href = 'tel:' + tel
+        },
         gotoOrders() {
             this.$router.push({
                 path: '/orders'
