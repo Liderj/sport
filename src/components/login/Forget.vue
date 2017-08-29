@@ -28,7 +28,7 @@ export default {
     data() {
         return {
             sms_code: '',
-            mobile: '',
+            mobile: null,
             password: '',
             password2: '',
             showpwd: false,
