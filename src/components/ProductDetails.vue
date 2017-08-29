@@ -2,7 +2,7 @@
     <div style=" padding-bottom:60px">
         <div v-if="download" class="download">
             <img src="../../static/img/icon/logo@2x.png" alt="">
-            <a href="">下载app</a>
+            <a href="http://a.app.qq.com/o/simple.jsp?pkgname=haha.client">下载app</a>
         </div>
         <swiper :interval='5000' :duration='1000' dots-class='training_tips_btn' loop auto>
             <swiper-item v-for="item in details.images">
@@ -261,7 +261,7 @@ export default {
             var self = this
             self.$vux.loading.show()
             axios.get('/api/trains/' + this.$route.params.id + '/detail')
-                .then(function (response) {
+                .then(function(response) {
                     self.details = response.data;
                     self.users = response.data.users.slice(-1, -7);
                     self.details.start_date = dateFormat.datef('YYYY-MM-dd', response.data.start_date * 1000)
@@ -272,7 +272,7 @@ export default {
                         })
                     }
                     self.$vux.loading.hide()
-                }).catch(function (err) {
+                }).catch(function(err) {
                     self.$vux.toast.text('网络错误', 'top')
                     self.$vux.loading.hide()
                 });
