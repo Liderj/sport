@@ -55,6 +55,7 @@ export default {
             }).then(
                 function(response) {
                     localStorage.setItem('token', response.data.token)
+                    localStorage.setItem('openid', response.data.wechat.openid || '')
                     // let ua = window.navigator.userAgent.toLowerCase();
                     // if (window.isApp()) {
                     //     if (/iphone|ipad|ipod/.test(ua)) {

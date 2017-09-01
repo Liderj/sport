@@ -41,7 +41,7 @@ export default {
             this.waiting = !this.waiting
             this.waiting_text = '(60s)后重试'
             var smsTime = 60, self = this;
-            var timer = setInterval(function () {
+            var timer = setInterval(function() {
                 self.waiting_text = '(' + smsTime + 's)后重试'
                 smsTime--
                 if (smsTime < 0) {
@@ -55,16 +55,16 @@ export default {
             axios.post('/api/user/bind', {
                 mobile: self.mobile,
                 sms_code: self.sms_code
-            }).then(function (res) {
+            }).then(function(res) {
                 var redirect = localStorage.getItem('redirect')
                 self.$vux.toast.text('绑定成功', 'middle')
-                setTimeout(function () {
+                setTimeout(function() {
                     self.$router.push({
                         path: redirect
                     })
                 }, 1500);
 
-            }).catch(function (err) {
+            }).catch(function(err) {
                 self.$vux.toast.text(err.response.data.message, 'top')
             })
         }

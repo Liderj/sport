@@ -72,8 +72,8 @@ export default {
     mounted() {
         this.getDetails()
         var ua = window.navigator.userAgent.toLowerCase();
-        if (ua.match(/MicroMessenger/i) != 'micromessenger') {
-            this.pay_type = this.pay_type.splice(0, 1)
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+            this.pay_type[1].key = 'wx_pub'
         }
     },
     methods: {
@@ -95,37 +95,50 @@ export default {
         },
         getDetails() {
             var self = this;
-            axios.get('/api/orders/trains/' + self.$route.params.id + '/detail').then(function (response) {
+            axios.get('/api/orders/trains/' + self.$route.params.id + '/detail').then(function(response) {
                 self.details = response.data;
                 self.timer()
-            }).catch(function (err) {
+            }).catch(function(err) {
                 self.$vux.toast.text('网络错误', 'top')
             });
         },
         pay() {
             var self = this
-            axios.post('/api/charge/trains',
-                {
-                    paymentable_id: self.details.id,
-                    channel: self.channel,
-                    success_url: 'http://www.heermengsport.com/page/orders/success/' + self.details.id
-                }
-            ).then(function (response) {
-                pingpp.createPayment(response.data.charge, function (result, err) {
-                    if (result == "fail") {
-                        self.$vux.toast.text('支付失败，请从新支付', 'top')
+            if (self.channel == 'wx_pub' && !localStorage.getItem('openid')) {
+                self.$vux.confirm.show({
+                    title: '提示',
+                    content: '请绑定微信账号进行支付',
+                    onCancel() {
+
+                    },
+                    onConfirm() {
+                        window.location.href = self.$route.fullPaths
                     }
-                });
-            }).catch(function (error) {
-                self.$vux.toast.text(error.response.data.message, 'middle')
-            })
+                })
+            }
+            // axios.post('/api/charge/trains',
+            //     {
+            //         paymentable_id: self.details.id,
+            //         openid: localStorage.getItem('openid') || '',
+            //         channel: self.channel,
+            //         success_url: 'http://www.heermengsport.com/page/orders/success/' + self.details.id
+            //     }
+            // ).then(function(response) {
+            //     pingpp.createPayment(response.data.charge, function(result, err) {
+            //         if (result == "fail") {
+            //             self.$vux.toast.text('支付失败，请从新支付', 'top')
+            //         }
+            //     });
+            // }).catch(function(error) {
+            //     self.$vux.toast.text(error.response.data.message, 'middle')
+            // })
         }
     },
     watch: {
-        nowTime: function (val, oldVal) {
+        nowTime: function(val, oldVal) {
             var self = this
             if (val > 0) {
-                var t = setTimeout(function () {
+                var t = setTimeout(function() {
                     self.timer()
                 }, 1000);
             }
