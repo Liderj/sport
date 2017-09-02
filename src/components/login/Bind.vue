@@ -38,17 +38,27 @@ export default {
     },
     methods: {
         sendMsg() {
-            this.waiting = !this.waiting
-            this.waiting_text = '(60s)后重试'
-            var smsTime = 60, self = this;
-            var timer = setInterval(function() {
-                self.waiting_text = '(' + smsTime + 's)后重试'
-                smsTime--
-                if (smsTime < 0) {
-                    clearInterval(timer)
-                    self.waiting = !this.waiting
-                }
-            }, 1000);
+            console.log('aaaaaaaaaaaaaaaaaaaaaaaa')
+
+            var self = this
+            if (self.mobile == null) {
+                self.$vux.toast.text('请输入手机号', 'middle')
+            } else {
+                this.waiting = !this.waiting
+                var smsTime = 60
+                axios.post('/api/sms', { mobile: self.mobile, }).then(
+                    function(res) {
+                        var timer = setInterval(function() {
+                            self.waiting_text = '(' + smsTime + 's)后重试'
+                            smsTime--
+                            if (smsTime < 0) {
+                                clearInterval(timer)
+                                self.waiting = !this.waiting
+                            }
+                        }, 1000);
+                    }
+                )
+            }
         },
         submit() {
             var self = this

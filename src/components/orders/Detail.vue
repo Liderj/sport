@@ -14,7 +14,7 @@
                     <label for="">创建时间:</label>{{created_at}}</span>
             </li>
         </ul>
-    
+
         <div class="venue">
             <p class="venue_name">{{details.train.venue.name}}</p>
             <div class="venue_info">
@@ -32,7 +32,7 @@
                 <span style="color:#FF6868">
                     {{status [details.status]}}
                 </span>
-    
+
             </div>
             <p>
                 {{details.name}}({{details.mobile}}) </br>
@@ -42,7 +42,7 @@
             <div class="action">
                 <a style="border:1px solid #E9E9E9;background-color:#fff;color: #2E2C2F;" v-if="details.status<3 &&details.status>0" @click.stop="cancel(details.id)">申请退款</a>
                 <a style="border:1px solid #E9E9E9;background-color:#fff;color: #2E2C2F;" v-if="details.status == '0'" @click.stop="cancel(details.id)">撤销订单</a>
-    
+
                 <router-link :to="{path:'/orders/comment/'+details.id}" v-if="details.status == '3'">去评价</router-link>
             </div>
         </div>
@@ -92,7 +92,7 @@
                 <a @click="pay">确认支付</a>
             </div>
         </template>
-    
+
     </div>
 </template>
 <script>
@@ -142,26 +142,54 @@ export default {
         this.getOrderDetail()
         var ua = window.navigator.userAgent.toLowerCase();
         if (ua.match(/MicroMessenger/i) != 'micromessenger') {
-            this.pay_type = this.pay_type.splice(0, 1)
+            this.pay_type[1].key = 'wx_pub'
+        }
+        if (self.$route.query.code) {
+            self.code = self.$route.query.code
+            self.$vux.alert.show({
+                title: '提示',
+                content: '绑定成功',
+                onHide() {
+
+                }
+            })
+            axios.get('/api/oauth/weixin/info', { params: { code: self.code } }).then(res => {
+                localStorage.setItem('openid', res.data.openId)
+            }).catch(err => {
+                console.log(err)
+            })
         }
     },
     methods: {
         pay() {
             var self = this
+            if (self.channel == 'wx_pub' && !localStorage.getItem('openid')) {
+                self.$vux.confirm.show({
+                    title: '提示',
+                    content: '请绑定微信账号进行支付',
+                    onCancel() {
+
+                    },
+                    onConfirm() {
+                        window.location.href = 'http://120.77.43.178:8088/api/oauth/weixin/page?redirect_uri=http://www.heermengsport.com/page' + self.$route.fullPath
+                    }
+                })
+            }
             axios.post('/api/charge/trains',
                 {
                     paymentable_id: self.details.id,
+                    open_id: localStorage.getItem('openid') || '',
                     channel: self.channel,
                     success_url: 'http://www.heermengsport.com/page/orders/success/' + self.details.id
                 }
-            ).then(function (response) {
+            ).then(function(response) {
                 var charge = response.data.charge
-                pingpp.createPayment(charge, function (result, err) {
+                pingpp.createPayment(charge, function(result, err) {
                     if (result == "fail") {
                         self.$vux.toast.text('支付失败，请从新支付', 'top')
                     }
                 });
-            }).catch(function (error) {
+            }).catch(function(error) {
                 self.$vux.toast.text(error.response.data.message, 'middle')
             })
         },
@@ -189,7 +217,7 @@ export default {
                 text: 'loading...'
             })
             axios.get('/api/orders/trains/' + self.$route.params.id + '/detail').then(
-                function (response) {
+                function(response) {
                     self.details = response.data
                     self.created_at = dateFormat.datef('YYYY-MM-dd HH:mm', response.data.created_at * 1000)
                     self.details.train.start_date = dateFormat.datef('YYYY-MM-dd', response.data.train.start_date * 1000)
@@ -198,7 +226,7 @@ export default {
                     if (self.details.status == 0)
                         self.timer()
                 }
-            ).catch(function (error) {
+            ).catch(function(error) {
                 self.$vux.loading.hide()
                 self.$vux.toast.text(error.response.data.message, 'middle')
             });
@@ -213,12 +241,12 @@ export default {
                 },
                 onConfirm() {
                     axios.post('/api/orders/trains/' + id + '/cancel')
-                        .then(function (response) {
+                        .then(function(response) {
                             self.$vux.toast.text('取消成功', 'middle')
-                            setTimeout(function () {
+                            setTimeout(function() {
                                 self.$router.go(0)
                             }, 2000);
-                        }).catch(function (error) {
+                        }).catch(function(error) {
                             self.$vux.toast.text(error.response.data.message, 'middle')
                         })
                 }
@@ -228,16 +256,16 @@ export default {
     },
     watch: {
         details: {
-            handler: function (val, oldVal) {
+            handler: function(val, oldVal) {
                 if (!val.payment)
                     val.payment = oldVal.payment
             },
             deep: true
         },
-        nowTime: function (val, oldVal) {
+        nowTime: function(val, oldVal) {
             var self = this
             if (val > 0) {
-                var t = setTimeout(function () {
+                var t = setTimeout(function() {
                     self.timer()
                 }, 1000);
             }

@@ -55,7 +55,9 @@ export default {
             }).then(
                 function(response) {
                     localStorage.setItem('token', response.data.token)
-                    localStorage.setItem('openid', response.data.wechat.openid || '')
+                    if (response.data.wechat) {
+                        localStorage.setItem('openid', response.data.wechat.openid)
+                    }
                     // let ua = window.navigator.userAgent.toLowerCase();
                     // if (window.isApp()) {
                     //     if (/iphone|ipad|ipod/.test(ua)) {
@@ -75,6 +77,7 @@ export default {
                     })
                 }).catch(function(error) {
                     self.$vux.loading.hide()
+                    console.log(error)
                     self.$vux.toast.text(error.response.data.message, 'middle')
                 })
         }
