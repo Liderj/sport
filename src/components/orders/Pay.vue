@@ -134,7 +134,9 @@ export default {
                     }
                 })
             }
-            alert(self.channel)
+            if (self.price) {
+
+            }
             axios.post('/api/charge/trains',
                 {
                     paymentable_id: self.details.id,

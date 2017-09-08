@@ -10,7 +10,7 @@
                 <div class="other_btn">
                     <img src="../../../static/img/icon/qq@2x.png" @click="qqlogin" alt="">
                     <!-- <img src="../../../static/img/icon/weibo@2x.png" alt=""> -->
-                    <a href="http://120.77.43.178:8088/api/oauth/weixin/page?redirect_uri=http://www.heermengsport.com/page/login">
+                    <a href="http://www.heermengsport.com/api/oauth/weixin/page?redirect_uri=http://www.heermengsport.com/page/login">
                         <img src="../../../static/img/icon/weixin@2x.png" alt="">
                     </a>
 

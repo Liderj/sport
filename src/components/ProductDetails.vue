@@ -4,9 +4,9 @@
             <img src="../../static/img/icon/logo@2x.png" alt="">
             <a href="http://a.app.qq.com/o/simple.jsp?pkgname=haha.client">下载app</a>
         </div>
-        <swiper :interval='5000' :duration='1000' dots-class='training_tips_btn' loop auto>
+        <swiper v-if="details.images" height="140px" :interval='5000' :duration='1000' dots-class='training_tips_btn' loop auto>
             <swiper-item v-for="item in details.images">
-                <img style="width:100%;height: auto;" :src="item.url">
+                <img style="width:100%;" :src="item.url">
             </swiper-item>
 
         </swiper>
@@ -18,7 +18,12 @@
             <flexbox :gutter='10'>
                 <flexbox-item :span="1/3">
                     <div class="address_img">
-                        <img class="address_img" @click="showImg" :src="details.venue.images[0].url" alt="">
+                        <template v-if="details.venue.images[0]">
+                            <img class="address_img" @click="showImg" :src="details.venue.images[0].url" alt="">
+                        </template>
+                        <template v-else>
+                            <img class="address_img" @click="showImg" src="../../static/img/def.png" alt="">
+                        </template>
                         <div v-transfer-dom>
                             <previewer ref="previewer" :options="options" :list="list"></previewer>
                         </div>
@@ -83,9 +88,7 @@
             <div v-html="details.description" class="training_direction_desc" v-bind:class="{  showmore: showMore,  'unshow': !showMore}">
 
             </div>
-            <div v-if='!showMore' class="more_desc" @click="showMore = !showMore">
-                展开更多详情
-            </div>
+
         </div>
         <div class="user_list" v-if="details.users_count">
             <span class="user_list_title">已报名{{details.users_count}}人</span>
@@ -236,9 +239,6 @@ export default {
             if (this.$route.query.token) {
                 localStorage.setItem('token', this.$route.query.token)
             }
-            else {
-                localStorage.setItem('token', '')
-            }
         }
         this.getDetails();
     },
@@ -269,10 +269,12 @@ export default {
                     self.users = response.data.users.slice(-1, -7);
                     self.details.start_date = dateFormat.datef('YYYY-MM-dd', response.data.start_date * 1000)
                     self.details.end_date = dateFormat.datef('YYYY-MM-dd', response.data.end_date * 1000)
-                    for (var i = 0; i < response.data.venue.images.length; i++) {
-                        self.list.push({
-                            src: response.data.venue.images[i].url
-                        })
+                    if (response.data.venue.images) {
+                        for (var i = 0; i < response.data.venue.images.length; i++) {
+                            self.list.push({
+                                src: response.data.venue.images[i].url
+                            })
+                        }
                     }
                     self.$vux.loading.hide()
                 }).catch(function(err) {
@@ -433,10 +435,6 @@ export default {
     padding: 10px 0;
 }
 
-.training_direction .unshow {
-    max-height: 300px;
-    overflow: hidden;
-}
 
 .training_direction .showmore {
     max-height: auto;
