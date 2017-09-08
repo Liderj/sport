@@ -45,6 +45,7 @@ export default {
             time: 10,
             nowTime: 600000,
             channel: 'alipay_wap',
+            code: '',
             pay_type: [
                 {
                     icon: '../../../static/img/icon/zhifubao@2x.png',
@@ -70,10 +71,27 @@ export default {
         }
     },
     mounted() {
+        let self = this
         this.getDetails()
         var ua = window.navigator.userAgent.toLowerCase();
-        if (ua.match(/MicroMessenger/i) != 'micromessenger') {
-            this.pay_type = this.pay_type.splice(0, 1)
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+            this.pay_type[1].key = 'wx_pub'
+        }
+        if (self.$route.query.code) {
+            self.code = self.$route.query.code
+
+            self.$vux.alert.show({
+                title: '提示',
+                content: '绑定成功',
+                onHide() {
+
+                }
+            })
+            axios.get('/api/oauth/weixin/info', { params: { code: self.code } }).then(res => {
+                localStorage.setItem('openid', res.data.openId)
+            }).catch(err => {
+                console.log(err)
+            })
         }
     },
     methods: {
@@ -95,37 +113,51 @@ export default {
         },
         getDetails() {
             var self = this;
-            axios.get('/api/orders/trains/' + self.$route.params.id + '/detail').then(function (response) {
+            axios.get('/api/orders/trains/' + self.$route.params.id + '/detail').then(function(response) {
                 self.details = response.data;
                 self.timer()
-            }).catch(function (err) {
+            }).catch(function(err) {
                 self.$vux.toast.text('网络错误', 'top')
             });
         },
         pay() {
             var self = this
+            if (self.channel == 'wx_pub' && !localStorage.getItem('openid')) {
+                self.$vux.confirm.show({
+                    title: '提示',
+                    content: '请绑定微信账号进行支付',
+                    onCancel() {
+
+                    },
+                    onConfirm() {
+                        window.location.href = 'http://120.77.43.178:8088/api/oauth/weixin/page?redirect_uri=http://www.heermengsport.com/page' + self.$route.fullPath
+                    }
+                })
+            }
+            alert(self.channel)
             axios.post('/api/charge/trains',
                 {
                     paymentable_id: self.details.id,
-                    channel: self.channel,
+                    open_id: localStorage.getItem('openid') || '',
+                    channel: self.channel,//wx_wap
                     success_url: 'http://www.heermengsport.com/page/orders/success/' + self.details.id
                 }
-            ).then(function (response) {
-                pingpp.createPayment(response.data.charge, function (result, err) {
+            ).then(function(response) {
+                pingpp.createPayment(response.data.charge, function(result, err) {
                     if (result == "fail") {
                         self.$vux.toast.text('支付失败，请从新支付', 'top')
                     }
                 });
-            }).catch(function (error) {
+            }).catch(function(error) {
                 self.$vux.toast.text(error.response.data.message, 'middle')
             })
         }
     },
     watch: {
-        nowTime: function (val, oldVal) {
+        nowTime: function(val, oldVal) {
             var self = this
             if (val > 0) {
-                var t = setTimeout(function () {
+                var t = setTimeout(function() {
                     self.timer()
                 }, 1000);
             }

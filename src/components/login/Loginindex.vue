@@ -38,12 +38,11 @@ export default {
         }
     },
     mounted() {
-        this.$nextTick(function () {
+        this.$nextTick(function() {
             var self = this
             self.redirect = localStorage.getItem('redirect')
-            console.log(QC.Login.check())
             if (QC.Login.check()) {
-                QC.Login.getMe(function (openId, accessToken) {
+                QC.Login.getMe(function(openId, accessToken) {
                     self.openid = openId
                     self.loginOk(self.openid, 'qq')
                 })
@@ -74,7 +73,7 @@ export default {
                 params: {
                     code: code
                 }
-            }).then(function (res) {
+            }).then(function(res) {
                 self.openid = res.data.openId
                 self.loginOk(self.openid, 'wechat')
             }).catch(err => {
@@ -83,8 +82,10 @@ export default {
         },
         loginOk(openid, type) {
             var self = this
-            axios.post('/api/oauth', { type: type, openid: openid }).then(function (res) {
+            axios.post('/api/oauth', { type: type, openid: openid }).then(function(res) {
                 localStorage.setItem('token', res.data.token)
+                localStorage.setItem('openid', res.data.wechat.openid || '')
+
                 // let ua = window.navigator.userAgent.toLowerCase();
                 // if (window.isApp()) {
                 //     if (/iphone|ipad|ipod/.test(ua)) {

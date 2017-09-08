@@ -28,7 +28,7 @@ export default {
     data() {
         return {
             sms_code: '',
-            mobile: '',
+            mobile: null,
             password: '',
             password2: '',
             showpwd: false,
@@ -53,16 +53,25 @@ export default {
             }
         },
         sendMsg() {
-            this.waiting = !this.waiting
-            var smsTime = 60, self = this;
-            var timer = setInterval(function () {
-                self.waiting_text = '(' + smsTime + 's)后重试'
-                smsTime--
-                if (smsTime < 0) {
-                    clearInterval(timer)
-                    self.waiting = !this.waiting
-                }
-            }, 1000);
+            var self = this
+            if (self.mobile == null) {
+                self.$vux.toast.text('请输入手机号', 'middle')
+            } else {
+                this.waiting = !this.waiting
+                var smsTime = 60
+                axios.post('/api/sms', { mobile: self.mobile, }).then(
+                    function(res) {
+                        var timer = setInterval(function() {
+                            self.waiting_text = '(' + smsTime + 's)后重试'
+                            smsTime--
+                            if (smsTime < 0) {
+                                clearInterval(timer)
+                                self.waiting = !this.waiting
+                            }
+                        }, 1000);
+                    }
+                )
+            }
         },
         register() {
             var self = this;
@@ -70,7 +79,7 @@ export default {
                 self.$vux.toast.text('两次密码不一致', 'middle')
                 return
             }
-            axios.post('/api/password/reset', { mobile: self.mobile, password: self.password, sms_code: self.sms_code }).then(function (response) {
+            axios.post('/api/password/reset', { mobile: self.mobile, password: self.password, sms_code: self.sms_code }).then(function(response) {
                 self.$vux.loading.show({
                     text: '重置成功,\n 即将跳转至登陆页面'
                 })
@@ -78,7 +87,7 @@ export default {
                     self.$vux.loading.hide()
                     self.$router.go(-1)
                 }, 1500)
-            }).catch(function (error) {
+            }).catch(function(error) {
                 self.$vux.toast.text(error.response.data.message, 'middle')
             });
         }

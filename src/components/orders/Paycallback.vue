@@ -2,7 +2,7 @@
     <div class="pay_callback">
         <div class="pay_img">
             <img src="../../../static/img/gou.png" alt="">
-            <p>支付成功</p>
+            <p>{{callback.text}}</p>
         </div>
         <div class="pay_info">
             <ul>
@@ -18,7 +18,8 @@
                     <label for="">日期</label>{{details.train.start_date}}</Li>
             </ul>
             <div class="shaer_btn">
-                <router-link :to="{path:'/orders/Detail/'+details.id}">查看订单详情</router-link>
+                <router-link :to="{path:'/orders/pay/'+details.id}" v-if="details.status ==0">重新支付</router-link>
+                <router-link :to="{path:'/orders/Detail/'+details.id}" v-else>查看订单详情</router-link>
             </div>
         </div>
         <div class="share_tips">
@@ -30,7 +31,12 @@
 export default {
     data() {
         return {
+            callback: {
+                url: '../../../static/img/gou.png',
+                text: '支付成功'
+            },
             details: {
+                status: '0',
                 train: {
                     venue: ""
                 }
@@ -39,14 +45,21 @@ export default {
     },
     mounted() {
         this.getdetails()
+        // console.log(this.callback)
     },
     methods: {
         getdetails() {
             var self = this;
-            axios.get('/api/orders/trains/' + self.$route.params.id + '/detail').then(function (response) {
+            axios.get('/api/orders/trains/' + self.$route.params.id + '/detail').then(function(response) {
+                if (parseInt(response.data.status) != 1) {
+                    self.callback = {
+                        url: '../../../static/img/cha.png',
+                        text: '支付失败'
+                    }
+                }
                 self.details = response.data;
                 self.details.train.start_date = dateFormat.datef('YYYY-MM-dd', response.data.train.start_date * 1000)
-            }).catch(function (err) {
+            }).catch(function(err) {
                 self.$vux.toast.text(err.response.data.message, 'top')
             });
         }
@@ -114,6 +127,33 @@ export default {
     text-align: center;
     border-radius: 20px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
