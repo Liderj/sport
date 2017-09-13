@@ -8,8 +8,11 @@
             <div class="enroll_desc_price clearfix">
                 <span>价格
                 </span>
-                <span class="number">￥
+                <span v-if="details.train.price>0" class="number">￥
                     <label>{{details.train.price*0.01}}</label>
+                </span>
+                <span v-else class="number">
+                    <label>免费体验</label>
                 </span>
             </div>
         </div>
@@ -26,9 +29,12 @@
             <div class="tips">
                 <img src="../../../static/img/icon/tishi@2x.png" width="15" height="15"> 请在{{time}}分钟内完成付款，否则订单会自动取消
             </div>
-            <span class="apply_price">
+            <span v-if="details.train.price>0" class="apply_price">
                 <span style="color:#000">合计</span>￥
                 <i>{{details.train.price*0.01}}</i>元
+            </span>
+            <span v-else class="apply_price">
+                <i>免费体验</i>
             </span>
             <a @click="pay">确认支付</a>
         </div>
@@ -134,26 +140,36 @@ export default {
                     }
                 })
             }
-            if (self.price) {
-
-            }
-            axios.post('/api/charge/trains',
-                {
-                    paymentable_id: self.details.id,
-                    open_id: localStorage.getItem('openid') || '',
-                    channel: self.channel,//wx_wap
-                    success_url: 'http://www.heermengsport.com/page/orders/success/' + self.details.id
-                }
-            ).then(function(response) {
-                pingpp.createPayment(response.data.charge, function(result, err) {
-                    if (result == "fail") {
-                        self.$vux.toast.text('支付失败，请从新支付', 'top')
+            if (self.details.train.price > 0) {
+                axios.post('/api/charge/trains',
+                    {
+                        paymentable_id: self.details.id,
+                        open_id: localStorage.getItem('openid') || '',
+                        channel: self.channel,//wx_wap
+                        success_url: 'http://www.heermengsport.com/page/orders/success/' + self.details.id
                     }
-                });
-            }).catch(function(error) {
-                self.$vux.toast.text(error.response.data.message, 'middle')
-            })
+                ).then(function(response) {
+                    pingpp.createPayment(response.data.charge, function(result, err) {
+                        if (result == "fail") {
+                            self.$vux.toast.text('支付失败，请从新支付', 'top')
+                        }
+                    });
+                }).catch(function(error) {
+                    self.$vux.toast.text(error.response.data.message, 'middle')
+                })
+            } else {
+                axios.post('/api/orders/balance/pay/trains', {
+                    paymentable_id: self.details.id,
+                }).then(
+                    function(res) {
+                        window.location.href = 'http://www.heermengsport.com/page/orders/success/' + self.details.id
+                    }
+                    ).catch(function(error) {
+                        self.$vux.toast.text(error.response.data.message, 'middle')
+                    })
+            }
         }
+
     },
     watch: {
         nowTime: function(val, oldVal) {

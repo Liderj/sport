@@ -239,7 +239,7 @@ export default {
             if (this.$route.query.token) {
                 localStorage.setItem('token', this.$route.query.token)
             }
-        }
+        }       
         this.getDetails();
     },
     methods: {
